@@ -22,6 +22,9 @@ let room = [
     //     turn: '',
     // }
 ];
+app.get((req,res)=>{
+    res.send('connected: '+waiting.length);
+});
 const rows = 14;
 const cols = 14;
 
