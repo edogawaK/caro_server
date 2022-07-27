@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const { findSourceMap } = require("module");
 const app = express();
 const httpServer = createServer(app);
-app.use(allowCrossDomain);
+app.use(cors())
 const io = new Server(httpServer, {
     cors: {
         origin: "*"
