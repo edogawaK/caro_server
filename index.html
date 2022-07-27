@@ -1,0 +1,103 @@
+<script>
+    function checkRow(row, col, data) {
+        let begin = col - 4 >= 0 ? (col - 4) : 0;
+        let count = 0;
+        while (begin <= col) {
+            count = 0;
+            for (let i = 0; i < 5; i++) {
+                if (data[row]) {
+                    count += data[row][begin + i];
+                }
+                console.log(row, begin + i, data[row][begin + i]);
+            }
+            if (count === 5 || count === -5) {
+                return true;
+            }
+            begin++;
+        }
+        return false;
+    }
+    function checkCol(row, col, data) {
+        let begin = row - 4 >= 0 ? (row - 4) : 0;
+        let count = 0;
+        while (begin <= row) {
+            count = 0;
+            for (let i = 0; i <= 4; i++) {
+                if (data[begin + i]) {
+                    count += data[begin + i][col];
+                    console.log(begin + i, col, data[begin + i][col]);
+                }
+            }
+            if (count === 5 || count === -5) {
+                return true;
+            }
+            begin++;
+        }
+        return false;
+    }
+    function checkRight(row, col, data) {
+        let beginRow = row - 4 >= 0 ? (row - 4) : 0;
+        // let endRow = row + 4 < 10 ? (row + 4) : (10 - 1);
+        let beginCol = col - row - beginRow;
+        // if(beginCol)
+        let count = 0;
+        while (beginRow <= row) {
+            count = 0;
+            for (let i = 0; i <= 4; i++) {
+                if (data[beginRow + i]) {
+                    if (data[beginRow + i][beginCol + i]) {
+                        count += data[beginRow + i][beginCol + i];
+                    }
+                }
+            }
+            if (count === 5 || count === -5) {
+                return true;
+            }
+            beginRow++;
+            beginCol++;
+        }
+        return false;
+    }
+    function checkLeft(row, col, data) {
+        let beginRow = row - 4 >= 0 ? (row - 4) : 0;
+        let beginCol = col + row - beginRow;
+        let count = 0;
+        while (beginRow <= row) {
+            count = 0;
+            for (let i = 0; i <= 4; i++) {
+                if (data[beginRow + i]) {
+                    if (data[beginRow + i][beginCol - i]) {
+                        count += data[beginRow + i][beginCol - i];
+                        console.log(beginRow+i,beginCol-i,data[beginRow + i][beginCol - i]);
+                    }
+                }
+            }
+            if (count === 5) {
+                return true;
+            }
+            if (count == -5) {
+                return true;
+            }
+            beginRow++;
+            beginCol--;
+        }
+        return false;
+    }
+    function checkWin(row, col, data) {
+        return checkLeft(row, col, data);
+    }
+    let data =
+        [
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+            [0, 0, 1, 0, 0, 0, 0, 1, 1, 0],
+            [1, 1, 0, 1, 0, 1, 0, 1, 1, 0],
+            [1, 0, 1, 0, 1, 1, 1, 0, 0, 1],
+            [1, 0, 0, 1, 0, 1, 0, 0, 0, -1],
+            [1, 0, 1, 0, 1, 1, 0, 0, -1, 0],
+            [1, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, -1, 0, 0, 0],
+            [1, 1, 1, 1, 1, -1, 0, 0, 0, 0],
+        ];
+    console.log(checkWin(5, 5, data));
+</script>
