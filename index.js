@@ -172,7 +172,12 @@ function leaveRoom(roomId, userId) {
     if (currentRoom.user2 == userId) {
         currentRoom.user2 = null;
     }
-    if (currentRoom.user1 == null && currentRoom.user2 == null) {
+    if (currentRoom.user1 != null || currentRoom.user2 != null) {
+        currentRoom.win=currentRoom.user1??currentRoom.user2;
+        io.sockets.in("room_"+roomId).emit("game_turn",currentRoom);
+        console.log("emit đisconec");
+    }
+    else{
         room.splice(index, 1);
     }
 }
@@ -256,7 +261,7 @@ io.on("connection", (socket) => {
     //room_find //find specific room
     //room_create //create new room and wait
     console.log(`${socket.id} connect`);
-    socket.on('disconnect', (socket) => {
+    socket.on('disconnect', () => {
         let userId = socket.id;
         let roomId = room.findIndex((i) => {
             if (i.user1 == userId || i.user2 == userId) {
@@ -264,9 +269,11 @@ io.on("connection", (socket) => {
             }
             return false;
         })
-        // leaveRoom(roomId, socket.id);
+        if(roomId!=-1){
+            leaveRoom(roomId, socket.id);
+        }
         leaveWait(userId);
     });
 });
 
-httpServer.listen(process.env.PORT || 80);
+httpServer.listen(process.env.PORT || 8000);
