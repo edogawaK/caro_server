@@ -1,5 +1,6 @@
 const express = require("express");
 const uuid = require("uuid");
+const cors= require('cors');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { findSourceMap } = require("module");
