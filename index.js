@@ -1,6 +1,6 @@
 const express = require("express");
 const uuid = require("uuid");
-const cors= require('cors');
+const cors = require('cors');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { findSourceMap } = require("module");
@@ -23,8 +23,8 @@ let room = [
     //     turn: '',
     // }
 ];
-app.get((req,res)=>{
-    res.send('connected: '+waiting.length);
+app.get((req, res) => {
+    res.send('connected: ' + waiting.length);
 });
 const rows = 14;
 const cols = 14;
@@ -160,6 +160,30 @@ function createRoom(author, manual = false) {
     return newRoom;
 }
 
+
+function leaveRoom(roomId, userId) {
+    let index = room.findIndex((i) => {
+        return i.id == roomId;
+    });
+    let currentRoom = room[index];
+    if (currentRoom.user1 == userId) {
+        currentRoom.user1 = null;
+    }
+    if (currentRoom.user2 == userId) {
+        currentRoom.user2 = null;
+    }
+    if (currentRoom.user1 == null && currentRoom.user2 == null) {
+        room.splice(index, 1);
+    }
+}
+
+function leaveWait(userId) {
+    let index = waiting.findIndex((i) => {
+        return i == userId;
+    });
+    waiting.splice(index, 1);
+}
+
 io.on("connection", (socket) => {
 
     socket.on('room_wait', (data) => {
@@ -171,6 +195,10 @@ io.on("connection", (socket) => {
         else {
             io.sockets.in("room_" + response.id).emit("game_new", response);
         }
+    });
+
+    socket.on('room_leave', (data) => {
+        leaveRoom(data.id, socket.id);
     });
 
     socket.on('game_turn', (data) => {
@@ -228,9 +256,17 @@ io.on("connection", (socket) => {
     //room_find //find specific room
     //room_create //create new room and wait
     console.log(`${socket.id} connect`);
-    // socket.on('disconnect', (socket) => {
-    //     socket.emit.to
-    // });
+    socket.on('disconnect', (socket) => {
+        let userId = socket.id;
+        let roomId = room.findIndex((i) => {
+            if (i.user1 == userId || i.user2 == userId) {
+                return true;
+            }
+            return false;
+        })
+        leaveRoom(roomId, socket.id);
+        leaveWait(userId);
+    });
 });
 
-httpServer.listen(process.env.PORT);
+httpServer.listen(process.env.PORT || 80);
