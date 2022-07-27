@@ -198,7 +198,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on('room_leave', (data) => {
-        leaveRoom(data.id, socket.id);
+        // leaveRoom(data.id, socket.id);
     });
 
     socket.on('game_turn', (data) => {
@@ -264,7 +264,7 @@ io.on("connection", (socket) => {
             }
             return false;
         })
-        leaveRoom(roomId, socket.id);
+        // leaveRoom(roomId, socket.id);
         leaveWait(userId);
     });
 });
